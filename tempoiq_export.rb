@@ -19,12 +19,12 @@ end_on = Time.parse(ENV['TIQ_END'])
 tiq = TempoIQ::Client.new(ENV['TIQ_API_KEY'], ENV['TIQ_API_SECRET'], ENV['TIQ_HOST'])
 
 tiq.list_devices.each do |device|
-	puts "Exporting [#{device.id}]: #{device.key}"
+  puts "Exporting [#{device.id}]: #{device.key}"
 
-	meta_file = File.join(export_dir, device.key, 'meta.json')
-	data_file = File.join(export_dir, device.key, 'data.csv')
+  meta_file = File.join(export_dir, device.key, 'meta.json')
+  data_file = File.join(export_dir, device.key, 'data.csv')
 
-	FileUtils.mkdir_p(File.dirname(meta_file))
+  FileUtils.mkdir_p(File.dirname(meta_file))
   File.open(meta_file, 'w') do |f|
     f.puts device.to_json
   end
@@ -32,7 +32,6 @@ tiq.list_devices.each do |device|
   CSV.open(data_file, 'w') do |csv|
     csv << %w[timestamp value]
     cursor = tiq.read({devices: {key: device.key}, sensors: { key: 'accel_x' }}, start_on, end_on)
-    puts "Found #{cursor.count} data points"
     cursor.each do |dp|
       csv << [dp.ts, dp.value]
     end
