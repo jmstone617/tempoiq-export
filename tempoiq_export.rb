@@ -30,7 +30,7 @@ tiq.list_devices.each do |device|
   end
 
   CSV.open(data_file, 'w') do |csv|
-    csv << %w[timestamp value]
+    csv << %w[timestamp value key]
     cursor = tiq.read({devices: {key: device.key}, sensors: 'all'}, start_on, end_on)
     cursor.each do |row|
       values = row.values[device.key]
